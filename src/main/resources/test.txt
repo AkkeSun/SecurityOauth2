@@ -1,0 +1,10 @@
+/oauth/authorize
+Oauth 사용자 인증을 위한 기본 path
+
+[Parameter]
+response_type = code
+client_id
+redirect_uri = code를 token으로 변환하기 위한 path
+scope = write or read
+
+http://localhost:8082/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
