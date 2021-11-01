@@ -6,29 +6,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableAuthorizationServer
-public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
+public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    TokenStore tokenStore;
+    DataSource dataSource;
 
     @Override
+    // 클라이언트에 대한 정보 주입
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient("testClientId")
-                .secret(passwordEncoder.encode("testSecret"))
-                .redirectUris("http://localhost:8082/oauth2/callback")
-                .authorizedGrantTypes("authorization_code")
-                .scopes("read", "write")
-                .accessTokenValiditySeconds(30000);
+        clients.jdbc(dataSource).passwordEncoder(passwordEncoder);
     }
-
 }
-// http://localhost:8082/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read

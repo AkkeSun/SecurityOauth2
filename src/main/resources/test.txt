@@ -8,3 +8,10 @@ redirect_uri = code를 token으로 변환하기 위한 path
 scope = write or read
 
 http://localhost:8082/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
+
+
+
+
+TEST 2
+Client, OWNER DB 연동
+http://localhost:8082/oauth/authorize?client_id=sun&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read

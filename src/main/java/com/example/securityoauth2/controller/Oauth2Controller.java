@@ -21,7 +21,7 @@ public class Oauth2Controller {
     @GetMapping
     public OAuthToken showEmployees(String code) {
 
-        String credentials = "testClientId:testSecret"; // 클라이언트 ID, secret
+        String credentials = "sun:pass"; // 클라이언트 ID, secret (DB에서 가져와야함) -> login시 세션저장
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 
         // Header 설정
