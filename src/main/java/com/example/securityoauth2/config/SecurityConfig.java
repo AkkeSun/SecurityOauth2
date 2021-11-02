@@ -1,5 +1,6 @@
 package com.example.securityoauth2.config;
 
+import com.example.securityoauth2.owner.OwnerProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private OwnerProvider ownerProvider;
 
     @Override
     //하위 정적자원들에 대해 보안구성에서 제외한다.
@@ -32,7 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/").permitAll() // 누구나 요청가능
                 .mvcMatchers(HttpMethod.GET, "/api/**").anonymous() // 누구나 요청가능
-                .antMatchers("/user/getEmployeeList").hasAnyRole("ADMIN") // ADMIN 만 요청가능
+                .antMatchers("/test/test1").hasAnyRole("ADMIN") // ADMIN 만 요청가능
+                .antMatchers("/test/test2").hasAnyRole("USER")  // USER 만 요청가능
                 .anyRequest().authenticated() // 나머지는 인증된 사용자만 요청가능
                 .and().formLogin().permitAll() // 로그인 인증은 누구나 요청가능
                 .and().logout().permitAll(); // 로그아웃 인증은 누구나 요청가능
@@ -41,9 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    // user에 대한 설정
+    // Owner 대한 설정
     public void configure(AuthenticationManagerBuilder authenticationMgr) throws Exception {
-        authenticationMgr.inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder.encode("admin")).authorities("ROLE_ADMIN");
+        authenticationMgr.authenticationProvider(ownerProvider);
     }
 }

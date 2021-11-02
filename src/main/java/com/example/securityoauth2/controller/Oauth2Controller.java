@@ -21,7 +21,7 @@ public class Oauth2Controller {
     @GetMapping
     public OAuthToken showEmployees(String code) {
 
-        String credentials = "sun:pass"; // 클라이언트 ID, secret (DB에서 가져와야함) -> login시 세션저장
+        String credentials = "lowlow:admin"; // 클라이언트 ID, secret
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 
         // Header 설정
@@ -43,8 +43,6 @@ public class Oauth2Controller {
         ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8082/oauth/token", request, String.class);
 
         // 리턴값을 OAuthToken에 담아서 리턴
-        if(response.getStatusCode() == HttpStatus.OK)
-            return gson.fromJson(response.getBody(), OAuthToken.class);
-        return null;
+        return gson.fromJson(response.getBody(), OAuthToken.class);
     }
 }

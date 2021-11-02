@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class ClientService {
 
@@ -17,6 +19,7 @@ public class ClientService {
     @Autowired
     ModelMapper modelMapper;
 
+    @Transactional
     public Client createClient(ClientDto dto){
         dto.setClient_secret(passwordEncoder.encode(dto.getClient_secret()));
         Client clinet =  modelMapper.map(dto, Client.class);

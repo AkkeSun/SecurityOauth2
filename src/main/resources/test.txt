@@ -13,5 +13,7 @@ http://localhost:8082/oauth/authorize?client_id=testClientId&redirect_uri=http:/
 
 
 TEST 2
-Client, OWNER DB 연동
-http://localhost:8082/oauth/authorize?client_id=sun&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
+Client, OWNER, TOKEN DB 연동
+참고 ->
+https://cheese10yun.github.io/spring-oauth2-jdbc
+http://localhost:8082/oauth/authorize?client_id=lowlow&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
