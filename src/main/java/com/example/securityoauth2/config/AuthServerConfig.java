@@ -34,7 +34,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                         .authorizedGrantTypes("authorization_code")
                         .scopes("read", "write")
                         .accessTokenValiditySeconds(30000);
-
         */
        clients.jdbc(dataSource).passwordEncoder(passwordEncoder);
     }

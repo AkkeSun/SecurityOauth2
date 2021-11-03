@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    // Owner 대한 설정
+    // Owner에 대한 정보를 DB를 통해 관리
     public void configure(AuthenticationManagerBuilder authenticationMgr) throws Exception {
         authenticationMgr.authenticationProvider(ownerProvider);
     }
