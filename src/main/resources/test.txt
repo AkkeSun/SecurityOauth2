@@ -17,3 +17,9 @@ Client, OWNER, TOKEN DB 연동
 참고 ->
 https://cheese10yun.github.io/spring-oauth2-jdbc
 http://localhost:8082/oauth/authorize?client_id=lowlow&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
+
+
+TEST 3
+JWT TOKEN 연동 (아래 -> 리프레시 토큰 링크)
+http://localhost:8082/oauth/authorize?client_id=lowlow&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
+http://localhost:8082/oauth2/token/refresh?refreshToken=위에서 받은 리프레시토큰
