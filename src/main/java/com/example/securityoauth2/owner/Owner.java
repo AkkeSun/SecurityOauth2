@@ -67,5 +67,6 @@ public class Owner implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
+
 }
 

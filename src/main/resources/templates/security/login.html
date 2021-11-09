@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LOGIN</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+    <p>ID : <input type="text" id="email" name="username"></p>
+    <p>PASSWORD : <input type="password" id="password" name="password"></p>
+    <button id="joinBtn" onclick="login()">Login</button>
+</body>
+
+<script>
+    function login(){
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        let userInfo = `username:${email}, password:${password}`;
+
+        alert(userInfo);
+        $.ajax({
+            type: "post",
+            url: "/login",
+            data: userInfo
+        });
+    }
+</script>
+</html>

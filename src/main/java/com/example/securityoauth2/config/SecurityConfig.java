@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -30,8 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //요청의 대한 설정
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/").permitAll() // 누구나 요청가능
-                .mvcMatchers(HttpMethod.GET, "/api/**").anonymous() // 누구나 요청가능
+                .antMatchers("/oauth/authorize").permitAll()
+                .antMatchers("/oauth/**", "/oauth2/callback").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/api/**").permitAll()// 누구나 요청가능
                 .antMatchers("/test/test1").hasAnyRole("ADMIN") // ADMIN 만 요청가능
                 .antMatchers("/test/test2").hasAnyRole("USER")  // USER 만 요청가능
                 .anyRequest().authenticated() // 나머지는 인증된 사용자만 요청가능
@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable(); // csrf 미사용
     }
+
 
     @Override
     // Owner에 대한 정보를 DB를 통해 관리

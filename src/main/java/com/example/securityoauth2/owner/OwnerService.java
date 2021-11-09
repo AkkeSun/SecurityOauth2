@@ -1,7 +1,9 @@
 package com.example.securityoauth2.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,7 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -22,6 +28,14 @@ public class OwnerService implements UserDetailsService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Override
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        Owner owner = ownerRepository.findByUsername(name).orElseThrow(
+                () -> new UsernameNotFoundException("USER IS NOT EXISTS"));
+        return owner;
+    }
+
+
     @Transactional
     public Owner saveOwner(Owner owner){
         owner.setPassword(passwordEncoder.encode(owner.getPassword()));
@@ -33,11 +47,9 @@ public class OwnerService implements UserDetailsService {
         return ownerRepository.findByUsername(name);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        Owner owner = ownerRepository.findByUsername(name).orElseThrow(
-                () -> new UsernameNotFoundException("USER IS NOT EXISTS"));
-        return owner;
+    @Transactional
+    public List<Owner> findAll(){
+        return ownerRepository.findAll();
     }
 }
 

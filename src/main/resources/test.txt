@@ -5,21 +5,18 @@ Oauth 사용자 인증을 위한 기본 path
 response_type = code
 client_id
 redirect_uri = code를 token으로 변환하기 위한 path
-scope = write or read
 
-http://localhost:8082/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
-
-
+http://localhost:8082/oauth/authorize?client_id=testClientId&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code
 
 
 TEST 2
 Client, OWNER, TOKEN DB 연동
 참고 ->
 https://cheese10yun.github.io/spring-oauth2-jdbc
-http://localhost:8082/oauth/authorize?client_id=lowlow&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
+http://localhost:8082/oauth/authorize?client_id=lowlow&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code
 
 
 TEST 3
 JWT TOKEN 연동 (아래 -> 리프레시 토큰 링크)
-http://localhost:8082/oauth/authorize?client_id=lowlow&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code&scope=read
+http://localhost:8082/oauth/authorize?client_id=lowlow&redirect_uri=http://localhost:8082/oauth2/callback&response_type=code
 http://localhost:8082/oauth2/token/refresh?refreshToken=위에서 받은 리프레시토큰

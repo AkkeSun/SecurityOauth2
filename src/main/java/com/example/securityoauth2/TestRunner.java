@@ -1,6 +1,5 @@
 package com.example.securityoauth2;
 
-import com.example.securityoauth2.client.Client;
 import com.example.securityoauth2.client.ClientDto;
 import com.example.securityoauth2.client.ClientService;
 import com.example.securityoauth2.owner.Owner;

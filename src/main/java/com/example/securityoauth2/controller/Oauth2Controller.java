@@ -2,6 +2,7 @@ package com.example.securityoauth2.controller;
 
 import com.example.securityoauth2.dto.OAuthToken;
 import com.google.gson.Gson;
+import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -10,10 +11,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpSession;
+
 /**
- * 여러 앱을 지원하려면 callback, refreshToken 매서드를 새로 만들어서  사용
+ * 여러 앱을 지원하려면 callback, refreshToken 매서드를 새로 만들어서 사용
  */
 @RestController
+@Log4j2
 @RequestMapping("/oauth2")
 public class Oauth2Controller {
 
@@ -24,8 +28,7 @@ public class Oauth2Controller {
     private RestTemplate restTemplate;
 
     @GetMapping("/callback")
-    public OAuthToken showEmployees(String code) {
-
+    public OAuthToken showEmployees(String code, HttpSession session) {
         String credentials = "lowlow:admin"; // 클라이언트 ID, secret
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 
@@ -46,15 +49,15 @@ public class Oauth2Controller {
 
         // 토큰값을 발급 받아서 ResponseEntity에 저장
         ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8082/oauth/token", request, String.class);
+        OAuthToken token = gson.fromJson(response.getBody(), OAuthToken.class);
 
-        // 리턴값을 OAuthToken에 담아서 리턴
-        return gson.fromJson(response.getBody(), OAuthToken.class);
+        return token;
     }
 
 
     @GetMapping(value = "/token/refresh")
     public OAuthToken refreshToken(@RequestParam String refreshToken) {
-
+        System.out.println("TEST");
         String credentials = "lowlow:admin";
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 
