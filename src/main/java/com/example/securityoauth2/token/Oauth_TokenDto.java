@@ -1,4 +1,4 @@
-package com.example.securityoauth2.dto;
+package com.example.securityoauth2.token;
 
 
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OAuthToken {
+public class Oauth_TokenDto {
     private String access_token;
     private String token_type;
     private String refresh_token;

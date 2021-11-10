@@ -1,17 +1,20 @@
-package com.example.securityoauth2.controller;
+package com.example.securityoauth2.token;
 
-import com.example.securityoauth2.dto.OAuthToken;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * 여러 앱을 지원하려면 callback, refreshToken 매서드를 새로 만들어서 사용
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 @Log4j2
 @RequestMapping("/oauth2")
+@SessionAttributes("tokenDto")
 public class Oauth2Controller {
 
     @Autowired
@@ -27,8 +31,12 @@ public class Oauth2Controller {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private Oauth_TokenRepository repository;
+
+
     @GetMapping("/callback")
-    public OAuthToken showEmployees(String code, HttpSession session) {
+    public void showEmployees(String code, Model model, HttpServletResponse resp) throws IOException {
         String credentials = "lowlow:admin"; // 클라이언트 ID, secret
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 
@@ -47,34 +55,33 @@ public class Oauth2Controller {
         // Header와 Param을 HttpEntity에 담기
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        // 토큰값을 발급 받아서 ResponseEntity에 저장
+        // 토큰데이터 발급받은 후 저장
         ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8082/oauth/token", request, String.class);
-        OAuthToken token = gson.fromJson(response.getBody(), OAuthToken.class);
+        Oauth_TokenDto tokenDto = gson.fromJson(response.getBody(), Oauth_TokenDto.class);
+        model.addAttribute("tokenDto", tokenDto);
 
-        return token;
+        resp.sendRedirect("/oauth2/token/save");
     }
 
 
-    @GetMapping(value = "/token/refresh")
-    public OAuthToken refreshToken(@RequestParam String refreshToken) {
-        System.out.println("TEST");
-        String credentials = "lowlow:admin";
-        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+    /**
+     * 토큰값 저장
+     */
+    @GetMapping(value = "/token/save")
+    public Oauth_Token saveToken(@ModelAttribute("tokenDto") Oauth_TokenDto tokenDto) {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Authorization", "Basic " + encodedCredentials);
+        // 로그인 정보 검색
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getPrincipal().toString();
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("refresh_token", refreshToken);
-        params.add("grant_type", "refresh_token");
+        // 토큰 DB 등록
+        Oauth_Token token = Oauth_Token.builder()
+                .token(tokenDto.getAccess_token())
+                .refresh_token(tokenDto.getRefresh_token())
+                .username(username)
+                .build();
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8082/oauth/token", request, String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return gson.fromJson(response.getBody(), OAuthToken.class);
-        }
-        return null;
+        Oauth_Token savedToken = repository.save(token);
+        return savedToken;
     }
 }

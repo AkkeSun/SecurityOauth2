@@ -1,6 +1,7 @@
 package com.example.securityoauth2.config;
 
 import com.example.securityoauth2.owner.OwnerService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
